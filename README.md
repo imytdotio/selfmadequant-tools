@@ -1,6 +1,6 @@
-# Q4Quant Tools
+# Self Made Quant Tools
 
-The interactive tools from [q4quant.studio/tools](https://q4quant.studio/tools), open-sourced.
+The interactive tools from [selfmadequant.com/tools](https://selfmadequant.com/tools), open-sourced.
 
 | Tool | Component | Logic |
 | --- | --- | --- |
