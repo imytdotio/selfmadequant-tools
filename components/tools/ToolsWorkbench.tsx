@@ -175,7 +175,7 @@ export default function ToolsWorkbench({ locks = {} }: { locks?: Partial<Record<
             <button onClick={() => go(-1)} disabled={history.index === 0} aria-label="Previous tool">←</button>
             <button onClick={() => go(1)} disabled={history.index >= history.stack.length - 1} aria-label="Next tool">→</button>
           </div>
-          <div className="tools-browser-address" aria-label="Current tool address"><span aria-hidden="true">⌂</span>q4quant.studio<b>/tools/{current.slug}</b></div>
+          <div className="tools-browser-address" aria-label="Current tool address"><span aria-hidden="true">⌂</span>SelfMadeQuant.com<b>/tools/{current.slug}</b></div>
           <span className="tools-browser-count" aria-hidden="true">{current.number} / {String(apps.length).padStart(2, '0')}</span>
         </div>
       </div>
