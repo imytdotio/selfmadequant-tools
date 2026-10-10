@@ -10,6 +10,7 @@ import PokerTrainer from './PokerTrainer'
 import { TOOLS, type ToolId, type ToolLock } from './catalog'
 import { surfaceVolatility, projectSurface, type SurfaceShape } from '@/lib/volatility-surface'
 import { DEFAULT_OPTION, optionPrice, type OptionInputs, type OptionKind } from '@/lib/options-pricing'
+import { useToolJourney } from '@/lib/use-tool-journey'
 
 const money = (n: number) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 })
 const apps = TOOLS
@@ -53,6 +54,8 @@ export default function ToolsWorkbench({ locks = {}, initialApp = 'options' }: {
   const chromeRef = useRef<HTMLDivElement>(null)
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({})
   const current = apps.find(item => item.id === app)!
+  const [hashReady, setHashReady] = useState(false)
+  const toolJourney = useToolJourney(app, hashReady)
 
   // Deep link: /tools#order-book opens that tab.
   useEffect(() => {
@@ -61,6 +64,7 @@ export default function ToolsWorkbench({ locks = {}, initialApp = 'options' }: {
       if (fromHash) { setApp(fromHash.id); setHistory({ stack: [fromHash.id], index: 0 }) }
     }
     sync()
+    setHashReady(true)
     window.addEventListener('hashchange', sync)
     return () => window.removeEventListener('hashchange', sync)
   }, [])
@@ -180,7 +184,9 @@ export default function ToolsWorkbench({ locks = {}, initialApp = 'options' }: {
           <span className="tools-browser-count" aria-hidden="true">{current.number} / {String(apps.length).padStart(2, '0')}</span>
         </div>
       </div>
-      <div className="tool-app" id="tool-panel" role="tabpanel" aria-labelledby={`tool-tab-${app}`} key={app}>{app === 'strategy' ? <OptionStrategyDesigner /> : app === 'options' ? <OptionsApp /> : app === 'surface' ? <VolatilitySurface /> : app === 'poker' ? <PokerTrainer lock={locks.poker} /> : app === 'bayes' ? <BayesTrainer lock={locks.bayes} /> : app === 'book' ? <OrderBookSimulator /> : <MarketMakingGame lock={locks.market} />}</div>
+      <div className="tool-app" id="tool-panel" role="tabpanel" aria-labelledby={`tool-tab-${app}`} key={app}
+        {...toolJourney}
+      >{app === 'strategy' ? <OptionStrategyDesigner /> : app === 'options' ? <OptionsApp /> : app === 'surface' ? <VolatilitySurface /> : app === 'poker' ? <PokerTrainer lock={locks.poker} /> : app === 'bayes' ? <BayesTrainer lock={locks.bayes} /> : app === 'book' ? <OrderBookSimulator /> : <MarketMakingGame lock={locks.market} />}</div>
     </div>
   </section>
 }
