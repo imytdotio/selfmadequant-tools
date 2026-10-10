@@ -1,5 +1,6 @@
 'use client'
 
+import OptionStrategyDesigner from './OptionStrategyDesigner'
 import ToolSourceLink from './ToolSourceLink'
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import BayesTrainer from './BayesTrainer'
@@ -44,9 +45,9 @@ function Slider({ label, value, min, max, step = 1, unit = '', onChange }: { lab
   return <label className="tool-control"><span>{label}<output>{unit === '$' ? money(value) : `${value}${unit}`}</output></span><input aria-label={label} type="range" min={min} max={max} step={step} value={value} onChange={e => onChange(Number(e.target.value))} /><small><span>{min}{unit === '$' ? ' USD' : unit}</span><span>{max}{unit === '$' ? ' USD' : unit}</span></small></label>
 }
 
-export default function ToolsWorkbench({ locks = {} }: { locks?: Partial<Record<ToolId, ToolLock>> } = {}) {
-  const [app, setApp] = useState<AppId>('options')
-  const [history, setHistory] = useState<{ stack: AppId[]; index: number }>({ stack: ['options'], index: 0 })
+export default function ToolsWorkbench({ locks = {}, initialApp = 'options' }: { locks?: Partial<Record<ToolId, ToolLock>>; initialApp?: AppId } = {}) {
+  const [app, setApp] = useState<AppId>(initialApp)
+  const [history, setHistory] = useState<{ stack: AppId[]; index: number }>({ stack: [initialApp], index: 0 })
   const [pinned, setPinned] = useState(false)
   const rootRef = useRef<HTMLElement>(null)
   const chromeRef = useRef<HTMLDivElement>(null)
@@ -179,7 +180,7 @@ export default function ToolsWorkbench({ locks = {} }: { locks?: Partial<Record<
           <span className="tools-browser-count" aria-hidden="true">{current.number} / {String(apps.length).padStart(2, '0')}</span>
         </div>
       </div>
-      <div className="tool-app" id="tool-panel" role="tabpanel" aria-labelledby={`tool-tab-${app}`} key={app}>{app === 'options' ? <OptionsApp /> : app === 'surface' ? <VolatilitySurface /> : app === 'poker' ? <PokerTrainer lock={locks.poker} /> : app === 'bayes' ? <BayesTrainer lock={locks.bayes} /> : app === 'book' ? <OrderBookSimulator /> : <MarketMakingGame lock={locks.market} />}</div>
+      <div className="tool-app" id="tool-panel" role="tabpanel" aria-labelledby={`tool-tab-${app}`} key={app}>{app === 'strategy' ? <OptionStrategyDesigner /> : app === 'options' ? <OptionsApp /> : app === 'surface' ? <VolatilitySurface /> : app === 'poker' ? <PokerTrainer lock={locks.poker} /> : app === 'bayes' ? <BayesTrainer lock={locks.bayes} /> : app === 'book' ? <OrderBookSimulator /> : <MarketMakingGame lock={locks.market} />}</div>
     </div>
   </section>
 }

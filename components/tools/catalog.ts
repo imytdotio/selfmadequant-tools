@@ -8,6 +8,7 @@ export const TOOLS = [
   { id: 'bayes', number: '04', title: 'Bayes’ rule', glyph: 'P', slug: 'bayes-rule', summary: 'Guess the posterior, then watch the population shrink to the evidence.' },
   { id: 'book', number: '05', title: 'Order book', glyph: '⇅', slug: 'order-book', summary: 'Walk a limit order book and see what a market order really costs.' },
   { id: 'market', number: '06', title: 'Market making', glyph: '⇄', slug: 'market-making', summary: 'Quote a two-sided market against noise traders and an insider.' },
+  { id: 'strategy', number: '07', title: 'Strategy designer', glyph: '⌁', slug: 'option-strategy-designer', summary: 'Build multi-leg option strategies and explore payoff, risk and Greeks.' },
 ] as const
 
 export type ToolId = typeof TOOLS[number]['id']
