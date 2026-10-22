@@ -74,7 +74,7 @@ export default function ToolsWorkbench({ locks = {}, initialApp = 'options' }: {
   // Where supported this is a scroll-driven CSS animation (runs on the compositor, so the header and
   // the sticky chrome move in the same frame); JS only measures the scroll offsets on layout changes.
   useEffect(() => {
-    const root = rootRef.current, header = document.querySelector<HTMLElement>('.momentum-header')
+    const root = rootRef.current, header = document.querySelector<HTMLElement>('.smq-header, .momentum-header')
     if (!root) return
     const browser = root.querySelector<HTMLElement>('.tools-browser')
     const cssDriven = typeof CSS !== 'undefined' && CSS.supports('animation-timeline: scroll()') && CSS.supports('animation-range: 0px 1px')
