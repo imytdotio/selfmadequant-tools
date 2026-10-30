@@ -52,8 +52,8 @@
 .tools-browser{border-bottom:1px solid var(--line);background:white;box-shadow:0 28px 60px #1a355f0d}
 .tools-browser-chrome{position:sticky;top:0;z-index:40;background:#eef2f8;border-bottom:1px solid var(--line);transition:box-shadow .25s}
 .tools-browser-chrome.is-pinned{box-shadow:0 10px 24px #203b6112}
-.tools-tabstrip{display:flex;gap:2px;padding:8px 10px 0;overflow-x:auto;scrollbar-width:none}.tools-tabstrip::-webkit-scrollbar{display:none}
-.tools-tab{position:relative;display:flex;align-items:center;gap:10px;flex:1 1 0;min-width:150px;max-width:250px;padding:10px 14px 11px;font-size:12px;color:#5f7089;border-radius:0;transition:background .2s,color .2s}
+.tools-tabstrip{display:flex;gap:2px;padding:8px 10px 0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.tools-tab{position:relative;display:flex;align-items:center;gap:10px;flex:0 0 auto;min-width:150px;padding:10px 14px 11px;font-size:12px;color:#5f7089;border-radius:0;transition:background .2s,color .2s}
 .tools-tab:hover{background:#e3e9f3;color:#2b4467}
 .tools-tab.is-active{background:white;color:var(--ink);box-shadow:inset 0 2px var(--blue)}
 .tools-tab:not(.is-active)+.tools-tab:not(.is-active):before{content:'';position:absolute;left:-2px;top:30%;height:40%;width:1px;background:#cdd7e5}
@@ -62,7 +62,6 @@
 .tools-tab-glyph{width:22px;height:22px;display:grid;place-items:center;flex-shrink:0;font-size:13px;line-height:1;color:var(--blue);background:white;border:1px solid #dbe4f1;border-radius:4px}
 .tools-tab.is-active .tools-tab-glyph{background:#eef4ff;border-color:#bcd0f0}
 .tools-tab-title{flex:1;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tools-tab-number{font:9px var(--font-mono);color:#9aa8bb}
 .tools-browser-toolbar{display:flex;align-items:center;gap:12px;padding:8px 12px;background:white}
 .tools-browser-nav{display:flex;gap:2px}
 .tools-browser-nav button{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;font-size:14px;color:#4c6282;transition:background .2s}
@@ -73,7 +72,7 @@
 .tools-browser-address b{font-weight:400;color:#2b4467}
 .tools-browser-count{font:9px var(--font-mono);color:#8391a6;white-space:nowrap}
 .tools-browser .tool-app{border:0}
-@media(max-width:600px){.tools-workbench{padding:0 0 40px}.tools-browser{border-inline:0}.tools-tabstrip{padding:6px 6px 0}.tools-tab{min-width:132px;padding:9px 10px;gap:8px;font-size:11px}.tools-tab-number,.tools-browser-count{display:none}.tools-browser-toolbar{padding:6px 8px;gap:8px}}
+@media(max-width:600px){.tools-workbench{padding:0 0 40px}.tools-browser{border-inline:0}.tools-tabstrip{padding:6px 6px 0}.tools-tab{min-width:132px;padding:9px 10px;gap:8px;font-size:11px}.tools-browser-count{display:none}.tools-browser-toolbar{padding:6px 8px;gap:8px}}
 
 /* Scroll-linked header push: two compositor animations on separate properties so they add up.
    `translate` pushes the header up as the chrome arrives; `transform` brings it back as the chrome leaves.

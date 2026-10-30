@@ -86,7 +86,7 @@ export default function MarketMakingGame({ lock }: { lock?: ToolLock } = {}) {
 
   const profile = FLOW_PROFILES.find(p => p.id === profileId)!
   const source = game?.source ?? SOURCES.find(s => s.id === sourceId)!
-  const nouns = source.nounPlural, Noun = capital(source.noun)
+  const nouns = source.nounPlural
   const latest = results[results.length - 1]
   const step = stage === 'quote' ? results.length : latest?.step ?? 0
   const revealed = stage === 'settled' ? ITEM_COUNT : stage === 'result' && latest ? latest.revealed : revealedBefore(step)

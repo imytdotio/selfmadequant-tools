@@ -14,6 +14,16 @@ export const TOOLS = [
 export type ToolId = typeof TOOLS[number]['id']
 export type ToolSlug = typeof TOOLS[number]['slug']
 
+/** Public workbench order; the strategy lab keeps its existing standalone URLs. */
+export const WORKBENCH_TOOLS = [
+  ...TOOLS.slice(0, 3),
+  { id: 'lab', number: '04', title: 'Strategy lab', glyph: '↗', slug: 'strategies', summary: 'Edit and backtest 151 Trading Strategies and 101 Formulaic Alphas on market data.' },
+  ...TOOLS.slice(4),
+  { ...TOOLS[3], number: '08' },
+] as const
+export type WorkbenchToolId = typeof WORKBENCH_TOOLS[number]['id']
+export const publicToolHref = (slug: string) => slug === 'strategies' ? '/strategies' : `/tools/${slug}`
+
 /**
  * Optional gate a host page can put on a tool's later steps.
  * When `locked` is true, the tool shows `notice` in place of the gated action;
