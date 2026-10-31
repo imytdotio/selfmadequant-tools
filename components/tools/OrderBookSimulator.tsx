@@ -6,6 +6,12 @@ import { MARKET_SCENARIOS, validMarketScenario, cancelUserOrders, type MarketSce
 
 import { seededRandom } from '@/lib/poker'
 import { reviewDecision, type DecisionReview } from '@/lib/orderbook-review'
+import { ToggleGroup } from '@/components/ui/ToggleGroup'
+
+const LIQUIDITY_OPTIONS = (['thin', 'normal', 'deep'] as const).map(value => ({ value, label: value }))
+const SIDE_OPTIONS = (['buy', 'sell'] as const).map(value => ({ value, label: value }))
+const KIND_OPTIONS = (['market', 'limit'] as const).map(value => ({ value, label: value }))
+const FILL_OPTIONS = [{ value: true, label: 'Trades now' }, { value: false, label: 'Rests unfilled' }]
 
 const money = (n: number, digits = 2) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: digits, maximumFractionDigits: digits })
 const wait = (ms: number) => new Promise(resolve => window.setTimeout(resolve, ms))
@@ -206,7 +212,7 @@ export default function OrderBookSimulator() {
     <div className="book-layout">
       <div className="book-stage">
         <div className="book-toolbar">
-          <div className="smile-presets" aria-label="Liquidity">{(['thin', 'normal', 'deep'] as const).map(item => <button key={item} aria-pressed={liquidity === item} disabled={busy !== null} onClick={() => reset(item)}>{item}</button>)}</div>
+          <ToggleGroup className="smile-presets" label="Liquidity" options={LIQUIDITY_OPTIONS} value={liquidity} onChange={reset} disabled={busy !== null} />
           <button className="surface-reset" disabled={busy !== null} onClick={stepMarket}>Next market event →</button>
         </div>
         <div className="pricing-metrics book-metrics">
@@ -222,13 +228,13 @@ export default function OrderBookSimulator() {
         </div>
         <p className="book-note" aria-live="polite">{note}{score?.remainder.disposition === 'unfilled' ? ` ${score.remainder.quantity} shares did not trade.` : ''}{score?.remainder.disposition === 'resting' ? ` ${score.remainder.quantity} shares rest at ${money(score.remainder.price!)}.` : ''}</p>
         <form className="book-ticket" onSubmit={event => { event.preventDefault(); void submit() }}>
-          <fieldset disabled={busy !== null} style={{ display: 'contents' }}><div className="tool-segment" aria-label="Order side">{(['buy', 'sell'] as const).map(item => <button type="button" key={item} aria-pressed={side === item} onClick={() => setSide(item)}>{item}</button>)}</div>
-          <div className="tool-segment" aria-label="Order type">{(['market', 'limit'] as const).map(item => <button type="button" key={item} aria-pressed={kind === item} onClick={() => setKind(item)}>{item}</button>)}</div>
+          <fieldset disabled={busy !== null} style={{ display: 'contents' }}><ToggleGroup className="tool-segment" label="Order side" options={SIDE_OPTIONS} value={side} onChange={setSide} />
+          <ToggleGroup className="tool-segment" label="Order type" options={KIND_OPTIONS} value={kind} onChange={setKind} />
           <label>Quantity<input inputMode="numeric" aria-label="Quantity" value={quantity} onChange={event => setQuantity(event.target.value)} /></label>
           {kind === 'limit' && <label>Limit price<input inputMode="decimal" aria-label="Limit price" value={limitPrice} onChange={event => setLimitPrice(event.target.value)} /></label>}
           <div className="book-predict">
             <span>Before you send it</span>
-            <div className="tool-segment" aria-label="Will the order trade">{([['Trades now', true], ['Rests unfilled', false]] as const).map(([label, value]) => <button type="button" key={label} aria-pressed={expectsFill === value} onClick={() => setExpectsFill(value)}>{label}</button>)}</div>
+            <ToggleGroup className="tool-segment" label="Will the order trade" options={FILL_OPTIONS} value={expectsFill} onChange={setExpectsFill} />
             <label>Predicted average fill<input inputMode="decimal" aria-label="Predicted average fill" placeholder="100.16" disabled={expectsFill === false} value={predicted} onChange={event => setPredicted(event.target.value)} /></label>
           </div>
           <button className="poker-deal" type="submit" disabled={busy !== null}>{busy === 'order' ? 'Working the book…' : 'Submit order'} <span aria-hidden="true">→</span></button>

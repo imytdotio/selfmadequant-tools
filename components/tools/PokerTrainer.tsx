@@ -5,6 +5,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { ThinkingOrb } from 'thinking-orbs'
 import type { ToolLock } from './catalog'
 import { calculatePokerOdds, cardLabel, handName, RANKS, SUITS, seededRandom, shuffledDeck, type PokerOdds } from '@/lib/poker'
+import ModelNotes from './ModelNotes'
 
 function newDeck() {
   const seed = crypto.getRandomValues(new Uint32Array(1))[0]
@@ -78,6 +79,6 @@ export default function PokerTrainer({ lock }: { lock?: ToolLock } = {}) {
         <div className="poker-practice"><span>THE EXERCISE</span><ol><li>Hide the odds and read your two cards.</li><li>Estimate your winning probability.</li><li>Reveal a card. Update your estimate.</li><li>Show the odds and compare.</li></ol></div>
       </aside>
     </div>
-    <details className="tool-model-notes"><summary>How the probabilities work <span>+</span></summary><p>Heads-up Texas Hold’em with one uniformly random opponent, no folds, no betting ranges and no rake. Both players make their best five-card hand from two hole cards and five community cards. Before the river, 12,000 simulated deals sample unknown opponent cards and board runouts without replacement. On the river, every possible opponent pair is evaluated exactly. Ties split the pot equally. Only visible cards enter the calculation; unrevealed cards in this practice hand do not influence the estimate. Rounded percentages may not sum to exactly 100%.</p></details>
+    <ModelNotes title="How the probabilities work">Heads-up Texas Hold’em with one uniformly random opponent, no folds, no betting ranges and no rake. Both players make their best five-card hand from two hole cards and five community cards. Before the river, 12,000 simulated deals sample unknown opponent cards and board runouts without replacement. On the river, every possible opponent pair is evaluated exactly. Ties split the pot equally. Only visible cards enter the calculation; unrevealed cards in this practice hand do not influence the estimate. Rounded percentages may not sum to exactly 100%.</ModelNotes>
   </>
 }

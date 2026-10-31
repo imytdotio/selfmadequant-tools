@@ -10,6 +10,8 @@ import {
 import { RANKS, SUITS, cardLabel } from '@/lib/poker'
 import type { ToolLock } from './catalog'
 import './market-making.css'
+import { ToggleGroup } from '@/components/ui/ToggleGroup'
+import ModelNotes from './ModelNotes'
 
 const money = (n: number) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const signed = (n: number) => `${n > 0.004 ? '+' : n < -0.004 ? '−' : ''}${money(Math.abs(n))}`
@@ -127,8 +129,8 @@ export default function MarketMakingGame({ lock }: { lock?: ToolLock } = {}) {
       <div className="mm-stage">
         <div className="mm-toolbar">
           <div className="mm-toolbar-groups">
-            <div className="tool-segment" role="group" aria-label="Game">{SOURCES.map(s => <button key={s.id} type="button" aria-pressed={sourceId === s.id} onClick={() => chooseSource(s.id)}>{s.label}</button>)}</div>
-            <div className="smile-presets" role="group" aria-label="Order flow">{FLOW_PROFILES.map(p => <button key={p.id} type="button" aria-pressed={profileId === p.id} onClick={() => chooseProfile(p.id)}>{p.label} flow</button>)}</div>
+            <ToggleGroup className="tool-segment" label="Game" options={SOURCES.map(s => ({ value: s.id, label: s.label }))} value={sourceId} onChange={chooseSource} />
+            <ToggleGroup className="smile-presets" label="Order flow" options={FLOW_PROFILES.map(p => ({ value: p.id, label: `${p.label} flow` }))} value={profileId} onChange={chooseProfile} />
           </div>
           <span className="mm-progress">{stage === 'settled' ? 'SETTLED' : `QUOTE ${step + 1} / ${TOTAL_QUOTES}`}</span>
         </div>
@@ -143,7 +145,7 @@ export default function MarketMakingGame({ lock }: { lock?: ToolLock } = {}) {
           <div className="mm-ticket-prices">
             <label>Bid<span>You buy at</span><input inputMode="decimal" type="number" step="0.25" min="0" value={bid} onChange={e => setBid(e.target.value)} aria-describedby="mm-width" /></label>
             <label>Ask<span>You sell at</span><input inputMode="decimal" type="number" step="0.25" min="0" value={ask} onChange={e => setAsk(e.target.value)} aria-describedby="mm-width" /></label>
-            <div className="mm-size"><span>Size<small>contracts</small></span><div className="tool-segment" role="group" aria-label="Quote size">{Array.from({ length: MAX_SIZE }, (_, i) => i + 1).map(n => <button key={n} type="button" aria-pressed={size === n} onClick={() => setSize(n)}>{n}</button>)}</div></div>
+            <div className="mm-size"><span>Size<small>contracts</small></span><ToggleGroup className="tool-segment" label="Quote size" options={Array.from({ length: MAX_SIZE }, (_, i) => ({ value: i + 1, label: i + 1 }))} value={size} onChange={setSize} /></div>
           </div>
           <p className="mm-width" id="mm-width">{widthValid ? <>Width <b>{money(width)}</b> of {money(source.maxWidth)} max · an uninformed trader deals <b>{Math.round(noiseTradeProbability(width, source) * 100)}%</b> of the time at this width</> : <>Quote a bid below your ask, at most {money(source.maxWidth)} wide.</>}</p>
           {error && <p className="book-error" role="alert">{error}</p>}
@@ -200,8 +202,8 @@ export default function MarketMakingGame({ lock }: { lock?: ToolLock } = {}) {
         <div className="poker-practice"><span>THE EXERCISE</span><ol><li>Work out fair value from the revealed {nouns}.</li><li>Quote around it. Width protects you but scares off noise traders.</li><li>Read the flow. A fill against you hints at the insider’s {source.noun}.</li><li>Lean against your inventory so you don’t get stuck with a big position.</li></ol></div>
       </aside>
     </div>
-    <details className="tool-model-notes"><summary>How the game works <span>+</span></summary><p>{source.id === 'cards'
+    <ModelNotes title="How the game works">{source.id === 'cards'
       ? <>Four cards are dealt from one shuffled 52-card deck. The contract settles at the sum of their values, with aces 1, jacks 11, queens 12 and kings 13, so its fair value before any information is {money(publicFair([], 0, source))}. Cards are dealt without replacement, so an unseen card is worth the average of the cards still in the deck: a revealed king makes every other unseen card slightly cheaper, and the insider’s card shifts the rest in the same way.</>
-      : <>Four fair six-sided dice are rolled. The contract settles at their sum, so its fair value before any information is {money(publicFair([], 0, source))}.</>} You make {TOTAL_QUOTES} markets; after every {QUOTES_PER_REVEAL} one more public {source.noun} is revealed, up to three. The fourth {source.noun} is seen only by an insider and is revealed at settlement. Each market meets one counterparty. With probability {Math.round(profile.informedShare * 100)}% ({profile.label.toLowerCase()} flow) it is the insider, who buys your ask if their expected value is above it, sells your bid if it is below, and otherwise passes. Otherwise it is a noise trader who buys or sells at random and deals less often as your market widens: always at {money(source.maxWidth / 4)} wide or less, falling to 25% at {money(source.maxWidth)}. Every trade is for your full quoted size. P&amp;L splits exactly into spread captured (your price against public fair value), adverse selection (the insider’s {source.noun} against public fair value) and luck ({nouns} not yet seen by anyone). This is a fictional practice game with made-up counterparties, loosely inspired by the Glosten–Milgrom model of trading against informed flow.</p></details>
+      : <>Four fair six-sided dice are rolled. The contract settles at their sum, so its fair value before any information is {money(publicFair([], 0, source))}.</>} You make {TOTAL_QUOTES} markets; after every {QUOTES_PER_REVEAL} one more public {source.noun} is revealed, up to three. The fourth {source.noun} is seen only by an insider and is revealed at settlement. Each market meets one counterparty. With probability {Math.round(profile.informedShare * 100)}% ({profile.label.toLowerCase()} flow) it is the insider, who buys your ask if their expected value is above it, sells your bid if it is below, and otherwise passes. Otherwise it is a noise trader who buys or sells at random and deals less often as your market widens: always at {money(source.maxWidth / 4)} wide or less, falling to 25% at {money(source.maxWidth)}. Every trade is for your full quoted size. P&amp;L splits exactly into spread captured (your price against public fair value), adverse selection (the insider’s {source.noun} against public fair value) and luck ({nouns} not yet seen by anyone). This is a fictional practice game with made-up counterparties, loosely inspired by the Glosten–Milgrom model of trading against informed flow.</ModelNotes>
   </>
 }
