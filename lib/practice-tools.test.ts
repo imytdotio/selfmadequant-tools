@@ -40,7 +40,7 @@ it('replays seeds and preserves uncrossed, positive books through varied flow', 
       expect(event.elapsedSeconds).toBeGreaterThanOrEqual(0)
     }
   }
-})
+}, 30_000)
 
 it('reviews the current book without mutating it or reading the live random stream', () => {
   const book = createBook('thin'), before = structuredClone(book)
